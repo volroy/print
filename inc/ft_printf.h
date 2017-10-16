@@ -75,7 +75,7 @@ char			*cast_u_o(t_flag *f, va_list *ap);
 char			*cast_lu_lo(t_flag *f, va_list *ap);
 int				cast_lc(t_flag *f, va_list *ap);
 int				handle_c(t_flag *f, va_list *ap);
-int				handle_lc(t_flag *f, va_list *ap);
+// int				handle_lc(t_flag *f, va_list *ap);
 int				handle_s(t_flag *f, va_list *ap);
 int				handle_ls(t_flag *f, va_list *ap);
 int				handle_d(t_flag *f, va_list *ap);
