@@ -5,52 +5,78 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yorlov <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/29 22:27:54 by yorlov            #+#    #+#             */
-/*   Updated: 2017/09/29 22:27:56 by yorlov           ###   ########.fr       */
+/*   Created: 2017/10/16 04:39:31 by yorlov            #+#    #+#             */
+/*   Updated: 2017/10/16 04:39:34 by yorlov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_printf.h"
-#include <stdlib.h>
 
-void	init_all(t_flag *f)
+void		init_f_tab(t_flag *f)
 {
-	init_f_tab(f);
-	init_conversions_table(f);
-	f->hex = (char*)malloc(sizeof(char) * 3);
-	ft_bzero(f->hex, 3);
-	f->hex[0] = '0';
-	f->len = 0;
-}
-
-void	init_f_tab(t_flag *f)
-{
-	int 	i;
+	int		i;
 
 	i = -1;
 	while (++i < 14)
 		f->f_tab[i] = 0;
-	f->f_tab[6] = -1;
+	f->index = 0;
+	f->arg = 0;
+	f->warg = 0;
 }
 
-void	init_conversions_table(t_flag *f)
+void		init_specificator(t_specificator *s)
 {
-	t_conv	s[2];
+	s[0].specificator = 's';
+	s[1].specificator = 'S';
+	s[2].specificator = 'c';
+	s[3].specificator = 'C';
+	s[4].specificator = 'd';
+	s[5].specificator = 'D';
+	s[6].specificator = 'i';
+	s[7].specificator = 'o';
+	s[8].specificator = 'O';
+	s[9].specificator = 'u';
+	s[10].specificator = 'U';
+	s[11].specificator = 'x';
+	s[12].specificator = 'X';
+	s[13].specificator = 'p';
+	s[14].specificator = 0;
+}
 
-	(void)f;
-	s[0].ptr = &handle_s;
-	// s[1].ptr = &handle_S;
-	// s[2].ptr = &handle_p;
-	// s[3].ptr = &handle_d;
-	// s[4].ptr = &handle_D;
-	// s[5].ptr = &handle_i;
-	// s[6].ptr = &handle_o;
-	// s[7].ptr = &handle_O;
-	// s[8].ptr = &handle_u;
-	// s[9].ptr = &handle_U;
-	// s[10].ptr = &handle_x;
-	// s[11].ptr = &handle_X;
-	// s[12].ptr = &handle_c;
-	// s[13].ptr = &handle_C;
-	// s[14].ptr = &handle_undefined;
+void		init_specificator_tail(t_specificator *s)
+{
+	s[0].ptr = handle_s;
+	s[1].ptr = handle_ls;
+	s[2].ptr = handle_c;
+	s[3].ptr = handle_c;
+	s[4].ptr = handle_d;
+	s[5].ptr = handle_ld;
+	s[6].ptr = handle_d;
+	s[7].ptr = handle_o;
+	s[8].ptr = handle_lo;
+	s[9].ptr = handle_u;
+	s[10].ptr = handle_lu;
+	s[11].ptr = handle_x;
+	s[12].ptr = handle_lx;
+	s[13].ptr = handle_p;
+	s[14].ptr = NULL;
+}
+
+void		init_buf(void)
+{
+	int		n;
+
+	n = -1;
+	while (++n < 2048)
+		g_buffer[n] = '\0';
+	g_buffer_counter = 0;
+}
+
+void		not_elon_but_musk(t_flag *f, int *mask)
+{
+	int		i;
+
+	i = 1;
+	while (++i < 14)
+		f->f_tab[i] = f->f_tab[i] * mask[i];
 }

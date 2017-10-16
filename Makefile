@@ -26,24 +26,28 @@ INC_PATH = ./inc
 OBJ_PATH = ./obj
 OBJLIB_PATH = ./obj
 
-SRC_NAME =	cast.c\
-			dispatcher.c\
+SRC_NAME =	parser.c\
+			handle_char.c\
+			handle_num.c\
+			handle_c_s.c\
+			handle_d_x.c\
+			handle_u_o.c\
+			handle_p_undef.c\
+			handler.c\
 			ft_printf.c\
-			handle_c.c\
-			handle_i.c\
-			handle_s.c\
-			handle_Xx.c\
-			handle_o.c\
-			handle_u.c\
-			handle_zero.c\
-			handle_percentage.c\
+			to_buf.c\
 			init_all.c\
-			parcer.c\
-			parser_tail.c\
-			main.c\
-			incompatible.c\
+			cast.c\
+			longchar_miracle.c
 
-LIB_NAME = 	additional_func.c\
+LIB_NAME = 	ft_atoi.c\
+			ft_itoa_base.c\
+			ft_strlen.c\
+			ft_strsub.c\
+			ft_wcharlen.c\
+			ft_strlwr.c\
+			ft_wstrlen.c\
+			ft_wstrsub.c
 
 INC_NAME = ft_printf.h
 
@@ -61,7 +65,6 @@ all: $(NAME)
 $(NAME): $(OBJ) $(OBJLIB)
 	@ar rc $(NAME) $(OBJ) $(OBJLIB)
 	@ranlib $(NAME)
-	@echo "here we go"
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@mkdir $(OBJ_PATH) 2> /dev/null || true
@@ -73,14 +76,11 @@ $(OBJLIB_PATH)/%.o: $(LIB_PATH)/%.c
 
 clean:
 	@rm -rf $(OBJ) $(OBJLIB)
-	@echo "\033[1;34mft_printf\t\033[1;33mCleaning obj\t\033[0;32m[OK]\033[0m"
 
 fclean: clean
 	@rm -rf ./obj $(NAME)
-	@echo "\033[1;34mft_printf\t\033[1;33mCleaning lib\t\033[0;32m[OK]\033[0m"
 
 re: fclean all
 
 norme:
 	@norminette $(SRC) $(LIB) $(INC)
-	@echo "\033[1;34mft_printf\t\033[1;33mNorminette\t\033[0;32m[OK]\033[0m"

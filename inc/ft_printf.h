@@ -5,142 +5,107 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yorlov <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/27 22:32:01 by yorlov            #+#    #+#             */
-/*   Updated: 2017/09/27 22:32:03 by yorlov           ###   ########.fr       */
+/*   Created: 2017/10/16 08:09:33 by yorlov            #+#    #+#             */
+/*   Updated: 2017/10/16 08:09:36 by yorlov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 
-#include <stdarg.h>
-#include <inttypes.h>
-#include <stdio.h>
+# include <stdarg.h>
+# include <unistd.h>
+# include <string.h>
+# include <stdlib.h>
+# include <wchar.h>
+
+char			g_buffer[2048];
+int				g_buffer_counter;
 
 typedef struct	s_flag
 {
+	int			res;
 	char		*format;
-	int			f_tab[14];
 	int			index;
-	char 		*arg;
-	int 		width;
+	char		spe;
+	char		*arg;
+	wchar_t		*warg;
+	char		sign;
+	va_list		ap;
 	intmax_t	data;
 	uintmax_t	data_max;
-	char 		sign;
-	char 		s_or_p;
-	char 		*buf;
-	int 		dot;
-	int 		len;
-	char 		*hex;
+	int			f_tab[13];
 }				t_flag;
 
-typedef struct	t_conv
+typedef struct	s_specificator
 {
+	char		specificator;
 	int			(*ptr)();
-}				t_conv;
+}				t_specificator;
 
-/*ft_printf*/
 int				ft_printf(const char *format, ...);
-
-/*parcer*/
-int			check_format(t_flag *f);
-int				check_flag(t_flag *f);
-void			check_width(t_flag *f);
-void			check_precision(t_flag *f);
-void			check_modif(t_flag *f);
-
-/*parcer_tail*/
-void			check_convercions(t_flag *f);
-void			check_convercions_2(t_flag *f);
-
-/*init_all*/
-void			init_all(t_flag *f);
-void			init_f_tab(t_flag *f);
-void			init_conversions_table(t_flag *f);
-
-/*dispatcher*/
-void			dispatcher(t_flag *f, va_list *ap);
-void			dispatcher2(t_flag *f, va_list *ap);
-
-/*additional_func*/
-int				ft_atoi(char *str, int k);
-int				ft_strlen(const char *str);
-int				ft_putstr(char *str);
-char			*pf_ft_itoa_base(uintmax_t nbr, int base);
-void			cast_var(t_flag *f, va_list *ap);
-int				print_c_times(t_flag *f, char c, int num);
-void			ft_sign(t_flag *f);
+void			ft_end(t_flag *f);
+char			*ft_strsub(char const *s, unsigned int start, size_t len);
 char			*ft_itoa_base(uintmax_t nbr, int base);
-uintmax_t		pf_ft_sign(t_flag *f, intmax_t data);
-char			*ft_strnew(size_t size);
-void			ft_bzero(void *s, size_t n);
-void			init_buf(t_flag *f);
-int 			to_buf(t_flag *f, char *c);
-int 			to_buf_c(t_flag *f, char c);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_strcpy(char *dst, const char *src);
-char			*ft_strcat(char *restrict s1, const char *restrict s2);
-char			*ft_strjoin_c(char const *s1, char s2);
-void			to_lower(t_flag *f);
-// void 	ft_putchar(char *str);
-
-/*handle_s*/
-int				handle_s(t_flag *f, va_list *ap);
-void			s_without_shift(t_flag *f);
-void			s_with_precision(t_flag *f);
-void			s_with_width(t_flag *f);
-void			s_with_width_and_precision(t_flag *f);
-
-/*handle_c*/
+uintmax_t		ft_sign(t_flag *f, intmax_t nbr);
+int				ft_strlen(const char *str);
+int				ft_atoi_mod(char *str, int *k);
+char			*ft_strlwr(char *s1);
+int				longchar_len(wchar_t wchar);
+size_t			byte_len(wchar_t *ws);
+size_t			longstr_len(wchar_t *ws);
+char			*ft_wstrsub(wchar_t *ws, unsigned int start, size_t len);
+char			*ft_strsub_with_free(char const *s, unsigned int start,
+				size_t len);
+char			*long_char_to_char(wchar_t *ws);
+int				put_long_char_in_char(wchar_t wchar, char *fresh, int i);
+int				dispatcher(t_flag *f, va_list *ap);
+void			init_specificator(t_specificator *s);
+void			init_specificator_tail(t_specificator *s);
+void			init_f_tab(t_flag *f);
+void			init_buf(void);
+int				parser(t_flag *f);
+void			parse_flag(t_flag *f);
+void			parse_width(t_flag *f);
+void			parse_precision(t_flag *f);
+void			parse_mod(t_flag *f);
+char			*cast_d(t_flag *f, va_list *ap);
+char			*cast_x(t_flag *f, va_list *ap);
+char			*cast_u_o(t_flag *f, va_list *ap);
+char			*cast_lu_lo(t_flag *f, va_list *ap);
+int				cast_lc(t_flag *f, va_list *ap);
 int				handle_c(t_flag *f, va_list *ap);
-void			c_with_width(t_flag *f, char s);
-
-/*handle_i*/
-int				handle_i(t_flag *f, va_list *ap);
-void			i_without_width_and_precision(t_flag *f);
-void			i_with_width(t_flag *f, int i);
-void			i_with_width_tail(t_flag *f, int k, int i);
-void 			i_with_precision(t_flag *f, int i);
-void			i_width_and_precision(t_flag *f, int i);
-void			i_width_and_precision_tail(t_flag *f, int k, int i);
-
-/*handle_Xx*/
-int				handle_Xx(t_flag *f, va_list *ap);
-char			*cast_x(t_flag *f, va_list *ap);
-void			x_without(t_flag *f);
-void			x_with_width(t_flag *f, int i, int k);
-void			x_with_precision(t_flag *f, int i, int k);
-void			x_width_and_precision(t_flag *f, int i, int k);
-
-/*handle_o*/
+int				handle_lc(t_flag *f, va_list *ap);
+int				handle_s(t_flag *f, va_list *ap);
+int				handle_ls(t_flag *f, va_list *ap);
+int				handle_d(t_flag *f, va_list *ap);
+int				handle_ld(t_flag *f, va_list *ap);
 int				handle_o(t_flag *f, va_list *ap);
-void			o_without(t_flag *f);
-void			o_with_width(t_flag *f);
-void			o_with_precision(t_flag *f);
-void			o_width_and_precision(t_flag *f);
-
-/*handle_u*/
 int				handle_u(t_flag *f, va_list *ap);
-void			u_without(t_flag *f);
-void			u_with_width(t_flag *f);
-void			u_with_precision(t_flag *f);
-void			u_width_and_precision(t_flag *f);
-
-/*handle_percentage*/
-int				handle_percentage(t_flag *f);
-int				handle_p(t_flag *f);
-
-/*handle_zero.c*/
-int		handle_zero(t_flag *f);
-int		handle_zero_o(t_flag *f);
-int		handle_zero_x(t_flag *f);
-
-/*cast*/
-char			*cast_i(t_flag *f, va_list *ap);
-char			*cast_x(t_flag *f, va_list *ap);
-char			*cast_o(t_flag *f, va_list *ap);
-
-
-int 	some_1(t_flag *f);
+int				handle_lo(t_flag *f, va_list *ap);
+int				handle_lu(t_flag *f, va_list *ap);
+int				handle_x(t_flag *f, va_list *ap);
+int				handle_lx(t_flag *f, va_list *ap);
+int				handle_p(t_flag *f, va_list *ap);
+int				handle_undef(t_flag *f);
+void			not_elon_but_musk(t_flag *f, int *mask);
+int				handle_char(t_flag *f);
+int				handle_num(t_flag *f);
+void			handle_prefics(t_flag *f);
+void			handle_octothorp(t_flag *f);
+void			handle_string_precision(t_flag *f);
+void			handle_num_precision_without_width(t_flag *f);
+void			handle_num_filler(t_flag *f, int len);
+void			handle_num_right_side(t_flag *f);
+void			handle_num_left_side(t_flag *f);
+void			handle_num_width(t_flag *f);
+void			handle_definitely_char(t_flag *f, int i);
+void			handle_char_width(t_flag *f);
+void			handle_char_left_side(t_flag *f);
+void			handle_char_right_side(t_flag *f);
+int				to_buf(char c, t_flag *f);
+void			null_exception(t_flag *f);
+void			print_it(t_flag *f);
+void			costyl(t_flag *f, va_list *ap);
 
 #endif
